@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table{
+            width: 100%;
+        }
+        table, tr, td, th{
+            border: 1px solid black;
+            border-collapse:collapse
+
+        }
+        body{
+            background-color:#2578dd;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+    </style>
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+    <h1>Usuarios Registrados</h1>
+    <div id="tabla">
+        <h2>Bienvendo, {{session_name}}</h2>
+        <div v-if="users">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th colspan="6">Address</th>
+                    <th>Phone</th>
+                    <th>Website</th>
+                    <th colspan="3">Company</th>
+                     <th colspan="2">Actions</th> 
+                </tr>
+                <tr v-for="user in users">
+                    <td>
+                        {{user.id}}
+                    </td>
+                    <td>    
+                        {{user.name}}
+                    </td>
+                    <td>    
+                        {{user.username}}
+                    </td>
+                    <td>    
+                        {{user.email}}
+                    </td>
+<!--                     <td>
+                        
+
+                        Street:  
+                        {{user.address.street}},
+                        
+                        Suite:
+                        {{user.address.suite}},
+                        
+                        City:
+                        {{user.address.city}},
+                        
+                        Zipcode:
+                        {{user.address.zipcode}},
+                        
+                        Geo: lat
+                        {{user.address.geo.lat}},
+                        long
+                        {{user.address.geo.lng}} 
+                    
+                    </td> -->
+                    <td>
+                        Street:  
+                        {{user.address.street}},
+                    </td>
+                    <td>
+                        Suite:
+                        {{user.address.suite}},
+                    </td>
+                    <td>
+                        City:
+                        {{user.address.city}},
+                    </td>
+                    <td>
+                        Zipcode:
+                        {{user.address.zipcode}},
+                        
+                    </td>
+                    <td>
+                        Geo: lat
+                        {{user.address.geo.lat}},
+                    </td>
+                    <td>
+                        Geo: long
+                        {{user.address.geo.lng}} 
+                    </td>
+                    <td>
+                        {{user.phone}}
+                    </td>
+                    <td>
+                        {{user.website}}
+                    </td>
+                    <td>
+                        Name:
+                        {{user.company.name}}
+                    </td>
+                    <td>
+                        Catchphrase:
+                        {{user.company.catchPhrase}},
+                    </td>
+                    <td>
+                        bs:
+                        {{user.company.bs}}
+                    </td>
+                     <td>
+                        <button @click="delet(user.id)">Delete</button>
+                    </td>
+                    <td>
+                        <button @click="edit(user.id)">Edit</button>
+                    </td> 
+                </tr>
+            </table>
+            <input type="hidden" v-model = 'user.id'>
+            <input type="text" v-model="user.name" placeholder="name">
+            <input type="text" v-model="user.username" placeholder="username">
+            <input type="text" v-model="user.password" placeholder="password">
+            <input type="text" v-model="user.email" placeholder="email">
+            <input type="text" v-model="user.address.street" placeholder="street">
+            <input type="text" v-model="user.address.suite" placeholder="suite">
+            <input type="text" v-model="user.address.city" placeholder="city">
+            <input type="text" v-model="user.address.zipcode" placeholder="zipcode">
+            <input type="text" v-model="user.address.geo.lat" placeholder="lat">
+            <input type="text" v-model="user.address.geo.lng" placeholder="lng">
+            <input type="text" v-model="user.phone" placeholder="phone">
+            <input type="text" v-model="user.website" placeholder="website">
+            <input type="text" v-model="user.company.name" placeholder="company name">
+            <input type="text" v-model="user.company.catchPhrase" placeholder="company catchPhrase">
+            <input type="text" v-model="user.company.bs" placeholder="company bs">
+            <button @click="add">{{buttonText}}</button>
+        </div> 
+
+    <!-- <p>{{users}}</p> -->
+    </div>
+</body>
+<script>
+    const {createApp} = Vue;
+    
+
+    // console.log(localStorage.getItem('name'));
+    createApp({
+        data(){
+            return{
+                buttonText: 'Create',
+                lastId: 0,
+                users:[] , 
+                session_name : localStorage.getItem('name'), 
+                session_username: localStorage.getItem('username'),
+                session_email: localStorage.getItem('email'),
+
+                // 
+
+                /* 
+                
+                 {id:-1,
+                        name:'name',
+                        username: 'username',
+                        password: 'pasword',
+                        email : 'email',
+                        address:{
+                            street: 'user.address.street',
+                            suite: 'user.address.suite',
+                            city: 'user.address.city',
+                            zipcode: 'user.address.zipcode',
+                            geo:{
+                                lat: 'user.address.geo.lat',
+                                lng: 'user.address.geo.lng',
+                            }
+                        },
+                        phone: 'user.phone',
+                        website: 'user.website',
+                        company: {
+                            name: 'user.company.name',
+                            catchPhrase: 'user.company.catchPhrase',
+                            bs: 'user.company.bs' 
+                        }    
+                    }
+                */
+
+                user :{id:-1,
+                        name:'',
+                        username: '',
+                        password: '',
+                        email : '',
+                        address:{
+                            street: '',
+                            suite: '',
+                            city: '',
+                            zipcode: '',
+                            geo:{
+                                lat: '',
+                                lng: '',
+                            }
+                        },
+                        phone: '',
+                        website: '',
+                        company: {
+                            name: '',
+                            catchPhrase: '',
+                            bs: '' 
+                        }    
+                    }
+            }
+        },
+        methods:{
+            delet(user_id){
+                if(window.confirm('¿Desea borrar este registro?')){
+                    this.users = this.users.filter(user => user.id != user_id);
+                }
+                alert('Registro borrado!');
+            },
+            add(){
+                let user = {
+                    id: this.user.id,
+                    name: this.user.name,
+                    username: this.user.username,
+                    password:this.user.password,
+                    email: this.user.email,
+                    address: {
+                        street: this.user.address.street,
+                        suite:  this.user.address.suite,
+                        city: this.user.address.city,
+                        zipcode: this.user.address.zipcode,
+                        geo: {
+                            lat: this.user.address.geo.lat,
+                            lng: this.user.address.geo.lng
+                        }
+                    },
+                    phone: this.user.phone,
+                    website: this.user.website,
+                    company: {
+                        name: this.user.company.name,
+                        catchPhrase: this.user.company.catchPhrase,
+                        bs: this.user.company.bs
+                    }
+                }    
+         /*        let persistance_user = Object.assign({}, user);
+                console.log('PU', persistance_user); */
+
+                // let persistance_user = user;
+                // console.log(this.user);
+                if(window.confirm('Quieres guardar los cambios?')){                    
+                    if(user.id == -1){
+                        this.lastId++;
+                       // console.log('asdasd', this.lastId);
+                        this.user.id = this.lastId;
+                        this.users.push(this.user);
+                    }else{
+                        let userPos = this.users.findIndex(element=> element.id == user.id);
+                     //   console.log('pos=>' , userPos);
+                        this.users[userPos] = user;
+                        this.buttonText = 'Create';
+                    }
+                    alert('Datos guardados!');
+                    this.resetform();
+                }
+/*                 else{
+
+                  //  this.user = persistance_user;
+                } */
+
+
+              
+              
+               
+              
+            },
+            edit(user_id){
+                // window.scrollTo(0, document.body.scrollHeight);
+                // console.log('0editar', user_idç);
+
+                let selected_user = this.users.filter(user => user.id == user_id);
+                // selected_user = JSON.parse(JSON.stringify(selected_user[0]));
+                selected_user = selected_user[0];
+                this.user.id = user_id;
+                this.user.name = selected_user.name;
+                this.user.username = selected_user.username;
+                this.user.password = selected_user.password;
+                this.user.email = selected_user.email;
+                this.user.address.street = selected_user.address.street;
+                this.user.address.suite = selected_user.address.suite;
+                this.user.address.city = selected_user.address.city;
+                this.user.address.zipcode = selected_user.address.zipcode;
+                this.user.address.geo.lat = selected_user.address.geo.lat;
+                this.user.address.geo.lng = selected_user.address.geo.lng;
+                this.user.phone = selected_user.phone;
+                this.user.website = selected_user.website;
+                this.user.company.name = selected_user.company.name;
+                this.user.company.catchPhrase = selected_user.company.catchPhrase;
+                this.user.company.bs = selected_user.company.bs;
+
+
+            
+              //  this.user = selected_user;pendejo 
+              this.buttonText = 'Save Changes';
+                console.log('id=>', this.user);
+                
+            },
+            resetform(){
+                this.user  = {id:-1,
+                        name:'',
+                        username: '',
+                        password: '',
+                        email : '',
+                        address:{
+                            street: '',
+                            suite: '',
+                            city: '',
+                            zipcode: '',
+                            geo:{
+                                lat: '',
+                                lng: '',
+                            }
+                        },
+                        phone: '',
+                        website: '',
+                        company: {
+                            name: '',
+                            catchPhrase: '',
+                            bs: '' 
+                        }    
+                    }       
+            }
+        },
+        mounted(){
+            fetch('users.json')
+            .then((res)=>res.json())
+            .then((json)=>{this.users = json; 
+                this.lastId = this.users.length;
+                console.log('last ID : ',this.lastId);
+            })
+            .then((error)=>console.log(error));  
+        }
+    }).mount('#tabla');
+
+</script>
+</html>
